@@ -40,22 +40,28 @@ unsigned long currentMillis = millis();
   if (lastMillis == 0 || (currentMillis - lastMillis) > delayMillis) {
     lastMillis = currentMillis;
 
-    float temp = (((tempsensor.readTempC() * 1.8) + 32) + offset);
-      if (temp > 0 && temp < 100) {
-          if (temp > (currentTemp + 3) || temp < (currentTemp - 3)) {
-            currentTemp = temp;
-            if (temp < lowPoint && !warningSent) {
-              //Send warning about low temperature
-              warningSent = true;
-            }
-            if (temp > (lowPoint + 3) && warningSent) {
-              //consider an alert the says temp has recovered above low point
-              warningSent = false;
-            }
-          }
-      }
+    checkTemp();
   }
 
+}
+
+void checkTemp() {
+  float temp = (((tempsensor.readTempC() * 1.8) + 32) + offset);
+  
+  if (temp > 0 && temp < 100) {
+    if (temp > (currentTemp + 3) || temp < (currentTemp - 3)) {
+      currentTemp = temp;
+      if (temp < lowPoint && !warningSent) {
+        //Send warning about low temperature
+        warningSent = true;
+      }
+      if (temp > (lowPoint + 3) && warningSent) {
+        //consider an alert the says temp has recovered above low point
+        warningSent = false;
+      }
+    }
+  }
+  
 }
 
 int changeOffset(String n_offset) {
